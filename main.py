@@ -65,6 +65,7 @@ def previousOrder(event):
 
 def validateOrder(event):
     forgotten = []
+    missing= ''
     if nameInput.text == '' or dateInput.text == '' or coffeeRadio.selected == None or milkRadio.selected == None or sugarRadio.selected == None or sizeRadio.selected == None:
         if nameInput.text == '':
             forgotten.append('Name')
@@ -78,7 +79,12 @@ def validateOrder(event):
             forgotten.append('Sugar')
         if sizeRadio.selected == None:
             forgotten.append('Size')
-        app.alert("Error", f"You must enter more info\nYou need to input {forgotten}", "error")
+        for x in forgotten:
+            if x == forgotten[-1]:
+                missing += f'{x}'
+            else:
+                missing += f'{x}, '
+        app.alert("Error", f"You must enter more info\nYou need to input {missing}.", "error")
     else:
         takeOrder(event=event)
 
@@ -90,7 +96,7 @@ app.width = 300
 
 titleLbl = gp.Label(app, "Cafe 263")
 titleLbl.size = 12
-titleLbl.justify('center')
+titleLbl.justify = 'center'
 nameLbl = gp.Label(app, 'Name:')
 nameInput = gp.Input(app)
 dateLbl = gp.Label(app, 'Date:')
