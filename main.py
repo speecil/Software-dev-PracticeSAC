@@ -43,12 +43,10 @@ def removeSelection():
     milkRadio.deselect()
     sugarRadio.deselect()
     coffeeRadio.deselect()
-    dateInput.text = ''
-    nameInput.text = ''
 
 def takeOrder(event):
     inputOrder = Data.Order(nameInput.text, dateInput.text, coffeeRadio.selected, milkRadio.selected, sugarRadio.selected, sizeRadio.selected)
-    finalOrder = [inputOrder.name, inputOrder.date, inputOrder.coffee, inputOrder.milk, inputOrder.sugar, inputOrder.size]
+    finalOrder = ["Name: " + inputOrder.name, "Date: " + inputOrder.date, "Coffee: " + inputOrder.coffee, "Milk: " + inputOrder.milk, "Sugars: " + inputOrder.sugar, "Size: " + inputOrder.size]
     with open('Orders.csv', 'a', newline = '') as csvfile:
         myWriter = csv.writer(csvfile, delimiter = ' ')
         myWriter.writerow(finalOrder)
@@ -60,11 +58,29 @@ def previousOrder(event):
         data = list(csv.reader(csvFile))
     prevOrderWindow = gp.GooeyPieApp('Previous Orders')
     prevOrderWindow.set_grid(3, 1)
-    app.width = 600
-    app.height = 800
+    prevOrderWindow.width = 600
     prevOrderList = gp.Listbox(prevOrderWindow, data)
     prevOrderWindow.add(prevOrderList, 1, 1, fill=True)
     prevOrderWindow.run()
+
+def validateOrder(event):
+    forgotten = []
+    if nameInput.text == '' or dateInput.text == '' or coffeeRadio.selected == None or milkRadio.selected == None or sugarRadio.selected == None or sizeRadio.selected == None:
+        if nameInput.text == '':
+            forgotten.append('Name')
+        if dateInput.text == '':
+            forgotten.append('Date')
+        if coffeeRadio.selected == None:
+            forgotten.append('Coffee')
+        if milkRadio.selected == None:
+            forgotten.append('Milk')
+        if sugarRadio.selected == None:     
+            forgotten.append('Sugar')
+        if sizeRadio.selected == None:
+            forgotten.append('Size')
+        app.alert("Error", f"You must enter more info\nYou need to input {forgotten}", "error")
+    else:
+        takeOrder(event=event)
 
 
 
@@ -72,6 +88,9 @@ app = gp.GooeyPieApp('Cafe 263')
 app.set_grid(10, 10)
 app.width = 300
 
+titleLbl = gp.Label(app, "Cafe 263")
+titleLbl.size = 12
+titleLbl.justify('center')
 nameLbl = gp.Label(app, 'Name:')
 nameInput = gp.Input(app)
 dateLbl = gp.Label(app, 'Date:')
@@ -80,21 +99,22 @@ coffeeRadio = gp.LabelRadiogroup(app, 'Coffee Type', coffeeType)
 milkRadio = gp.LabelRadiogroup(app, 'Milk', milkType)
 sizeRadio = gp.LabelRadiogroup(app, 'Size', sizeType)
 sugarRadio = gp.LabelRadiogroup(app, 'Sugar', sugarType)
-orderBtn = gp.Button(app, 'Order', takeOrder)
+orderBtn = gp.Button(app, 'Order', validateOrder)
 prevOrderBtn = gp.Button(app, 'Previous Orders', previousOrder)
 priceLbl = gp.Label(app, 'Price: ')
 
-app.add(nameLbl, 1, 1)
-app.add(nameInput, 2, 1)
-app.add(dateLbl, 1, 2)
-app.add(dateInput, 2, 2)
-app.add(coffeeRadio, 3, 1, fill=True)
-app.add(milkRadio, 3, 2, fill=True)
-app.add(sugarRadio, 4, 1, fill=True)
-app.add(sizeRadio, 4, 2, fill=True)
-app.add(orderBtn, 7, 1)
-app.add(prevOrderBtn, 7, 2)
-app.add(priceLbl, 6, 1)
+app.add(titleLbl, 1, 2)
+app.add(nameLbl, 2, 2)
+app.add(nameInput, 3, 2)
+app.add(dateLbl, 2, 3)
+app.add(dateInput, 3, 3)
+app.add(coffeeRadio, 4, 2, fill=True)
+app.add(milkRadio, 4, 3, fill=True)
+app.add(sugarRadio, 5, 2, fill=True)
+app.add(sizeRadio, 5, 3, fill=True)
+app.add(orderBtn, 8, 2)
+app.add(prevOrderBtn, 8, 3)
+app.add(priceLbl, 7, 2)
 
 sizeRadio.add_event_listener('change', priceRefresh)
 milkRadio.add_event_listener('change', priceRefresh)
