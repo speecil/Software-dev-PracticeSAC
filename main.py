@@ -5,7 +5,7 @@ import gooeypie as gp
 coffeeType = ('Flat White', 'Cappuccino', 'Short Black', 'Latte')
 milkType = ('None', 'Full Cream', 'Skim', 'Soy')
 sizeType = ('Small', 'Regular', 'Large')
-sugarType = ('None', 'One Sugar', 'Two  Sugars')
+sugarType = ('None', 'One Sugar', 'Two Sugars')
 
 def priceRefresh(event):
     price = 0
@@ -50,6 +50,8 @@ def takeOrder(event):
     with open('Orders.csv', 'a', newline = '') as csvfile:
         myWriter = csv.writer(csvfile, delimiter = ' ')
         myWriter.writerow(finalOrder)
+    app.alert("Order Placed!", f"An order has been placed for {nameInput.text} on the {dateInput.text}\n\nIt is a {sizeRadio.selected} {coffeeRadio.selected} with {milkRadio.selected} Milk and {sugarRadio.selected}")
+    priceLbl.text = "Price: "
     removeSelection()
     
 
@@ -81,10 +83,10 @@ def validateOrder(event):
             forgotten.append('Size')
         for x in forgotten:
             if x == forgotten[-1]:
-                missing += f'{x}'
+                missing += f'and {x}'
             else:
                 missing += f'{x}, '
-        app.alert("Error", f"You must enter more info\nYou need to input {missing}.", "error")
+        app.alert("Error", f"You must enter more info\nYou need to enter a {missing}.", "error")
     else:
         takeOrder(event=event)
 
